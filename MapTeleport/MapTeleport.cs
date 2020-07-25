@@ -20,7 +20,7 @@ namespace MapTeleport
         {
             ServerApi.Hooks.NetGetData.Register(this, OnGetData);
             ServerApi.Hooks.NetGreetPlayer.Register(this, OnGreet);
-            Commands.ChatCommands.Add(new Command("mapteleport.use", ToggleMapTeleport, "mapteleport", "maptp"){ HelpText = "Toggles map teleportation (Default: Disabled)"});
+            Commands.ChatCommands.Add(new Command("mapteleport.use", ToggleMapTeleport, "mapteleport", "maptp") { HelpText = "Toggles map teleportation (Default: Disabled)"});
         }
 
         protected override void Dispose(bool disposing)
@@ -49,18 +49,13 @@ namespace MapTeleport
                 if (args.Msg.readBuffer[3] == 2) {
                     TSPlayer player = TShock.Players[args.Msg.whoAmI];
                     if (player.GetData<bool>("mapteleport") && player.HasPermission("mapteleport.use")) {
-                        int X = (int)BitConverter.ToSingle(args.Msg.readBuffer, 5);
-                        int Y = (int)BitConverter.ToSingle(args.Msg.readBuffer, 9);
+                        int X = Math.Min(Main.maxTilesX, Math.Max(0, (int)BitConverter.ToSingle(args.Msg.readBuffer, 5)));
+                        int Y = Math.Min(Main.maxTilesY, Math.Max(0, (int)BitConverter.ToSingle(args.Msg.readBuffer, 9)));
                         if (player.HasPermission("mapteleport.solid")) {
                             player.Teleport(X * 16, Y * 16);
                             player.SendSuccessMessage($"Teleported to ({X}, {Y})");
-                        } else { //It works okay
-                            if ((Main.tile[X, Y] == null || !Main.tile[X, Y].active() || (!Main.tileSolid[Main.tile[X, Y].type] && Main.tile[X, Y].liquid == 0)) &&
-                            (Main.tile[X + 1, Y] == null || !Main.tile[X + 1, Y].active() || (!Main.tileSolid[Main.tile[X + 1, Y].type] && Main.tile[X + 1, Y].liquid == 0)) &&
-                            (Main.tile[X + 1, Y + 1] == null || !Main.tile[X + 1, Y + 1].active() || (!Main.tileSolid[Main.tile[X + 1, Y + 1].type] && Main.tile[X + 1, Y + 1].liquid == 0)) &&
-                            (Main.tile[X, Y + 1] == null || !Main.tile[X, Y + 1].active() || (!Main.tileSolid[Main.tile[X, Y + 1].type] && Main.tile[X, Y + 1].liquid == 0)) &&
-                            (Main.tile[X + 1, Y + 2] == null || !Main.tile[X + 1, Y + 2].active() || (!Main.tileSolid[Main.tile[X + 1, Y + 2].type] && Main.tile[X + 1, Y + 2].liquid == 0)) &&
-                            (Main.tile[X, Y + 2] == null || !Main.tile[X, Y + 2].active() || (!Main.tileSolid[Main.tile[X, Y + 2].type] && Main.tile[X, Y + 2].liquid == 0))) {
+                        } else {
+                            if ((Main.tile[X, Y] == null || !Main.tile[X, Y].active() || (!Main.tileSolid[Main.tile[X, Y].type] && Main.tile[X, Y].liquid == 0)) && (Main.tile[X + 1, Y] == null || !Main.tile[X + 1, Y].active() || (!Main.tileSolid[Main.tile[X + 1, Y].type] && Main.tile[X + 1, Y].liquid == 0)) && (Main.tile[X + 1, Y + 1] == null || !Main.tile[X + 1, Y + 1].active() || (!Main.tileSolid[Main.tile[X + 1, Y + 1].type] && Main.tile[X + 1, Y + 1].liquid == 0)) && (Main.tile[X, Y + 1] == null || !Main.tile[X, Y + 1].active() || (!Main.tileSolid[Main.tile[X, Y + 1].type] && Main.tile[X, Y + 1].liquid == 0)) && (Main.tile[X + 1, Y + 2] == null || !Main.tile[X + 1, Y + 2].active() || (!Main.tileSolid[Main.tile[X + 1, Y + 2].type] && Main.tile[X + 1, Y + 2].liquid == 0)) && (Main.tile[X, Y + 2] == null || !Main.tile[X, Y + 2].active() || (!Main.tileSolid[Main.tile[X, Y + 2].type] && Main.tile[X, Y + 2].liquid == 0))) {
                                 player.Teleport(X * 16, Y * 16);
                                 player.SendSuccessMessage($"Teleported to ({X}, {Y})");
                             } else {
