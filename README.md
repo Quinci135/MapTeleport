@@ -2,12 +2,13 @@
 Teleports you to pinged locations on the map
 
 ## Installation
-Place MapTeleport.dll into your plugins folder      
+Place MapTeleport.dll into your ServerPlugins folder      
     
 ## Permissions    
-`mapteleport.use`
+`mapteleport.use`     
 Allow the use of /mapteleport aka /maptp (Command toggles between on and off, default off)    
-`mapteleport.solid`
+    
+`mapteleport.solid`    
 Allows teleporting into solid tiles
     
 ### Example    
